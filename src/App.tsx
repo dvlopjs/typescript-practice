@@ -1,37 +1,38 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { createTheme, ThemeProvider } from "@mui/material";
+import Header from "./components/Header";
+import { useGetProducts } from "./hooks/useGetProducts";
+
+import Home from "./Pages/Home";
+import SearchInput from "./components/SearchInput";
 
 export function App() {
-  const [count, setCount] = useState(0);
+  // THEME
+  const [darkMode, setDarkMode] = useState(true);
+  const changeTheme = () => {
+    setDarkMode(!darkMode);
+  };
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+    },
+  });
+  const [inputValue, setInputValue] = useState("");
+  const { products, isLoading } = useGetProducts({ inputValue });
 
-  let message = "Hello World";
-
-  console.log(message.toUpperCase());
+  console.log(products);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ThemeProvider theme={theme}>
+        <Header changeTheme={changeTheme} />
+        <div style={{ paddingTop: 100 }}>
+          <SearchInput inputValue={inputValue} setInputValue={setInputValue} />
+
+          <Home products={products} isLoading={isLoading} />
+        </div>
+      </ThemeProvider>
     </>
   );
 }
