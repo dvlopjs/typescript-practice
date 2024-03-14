@@ -5,15 +5,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { MaterialUISwitch } from "./MaterialSwitch";
+import Logo from "../assets/images/yuna_logo.jpg";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { Badge } from "@mui/material";
 
 interface Props {
   /**
@@ -21,20 +21,15 @@ interface Props {
    * You won't need it on your project.
    */
   window?: () => Window;
-  changeTheme: Function;
 }
 
 const drawerWidth = 240;
 
 export default function Header(props: Props) {
+  const products = useSelector((state: RootState) => state.pasteleria.products);
+  const productsOnCart = products.filter((p) => p.addedToCart).length;
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const navItems = [
-    "Home",
-    "About",
-    <MaterialUISwitch onChange={() => props.changeTheme()} />,
-  ];
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -46,15 +41,6 @@ export default function Header(props: Props) {
         MUI
       </Typography>
       <Divider />
-      <List>
-        {navItems.map((item, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </Box>
   );
 
@@ -64,7 +50,7 @@ export default function Header(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav">
+      <AppBar component="nav" style={{ backgroundColor: "#e4f0e2" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -75,22 +61,15 @@ export default function Header(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            DeTodito
-          </Typography>
+
+          <Box flex={1}>
+            <img src={Logo} style={{ borderRadius: 50, maxHeight: 80 }} />
+          </Box>
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item, i) => (
-              <>
-                <Button key={i} sx={{ color: "#fff" }}>
-                  {item}
-                </Button>
-              </>
-            ))}
+            <Badge badgeContent={productsOnCart} color="error">
+              <ShoppingCartIcon style={{ color: "black", cursor: "pointer" }} />
+            </Badge>
           </Box>
         </Toolbar>
       </AppBar>
